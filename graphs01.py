@@ -129,120 +129,119 @@ def kruskal(graph):
     return minimum_spanning_tree
 
 def visualize_graph(matrix):
-    G = nx.Graph()
+    G = nx.Graph() if is_symmetric(matrix) else nx.DiGraph()  # Use DiGraph for directed graph
 
     num_nodes = len(matrix)
     G.add_nodes_from(range(num_nodes))
 
     edges = []
     for i in range(num_nodes):
-        for j in range(i + 1, num_nodes):
+        for j in range(num_nodes):
             if matrix[i][j] == 1:
                 edges.append((i, j))
 
     pos = nx.spring_layout(G)
 
-    nx.draw_networkx_nodes(G, pos, node_size=300, node_color='lightblue')
-    nx.draw_networkx_edges(G, pos, edgelist=edges, width=1.0, edge_color='gray')
+    if is_symmetric(matrix):
+        nx.draw_networkx_nodes(G, pos, node_size=500, node_color="#ff7518")
+        nx.draw_networkx_edges(G, pos, edgelist=edges, width=2.0, edge_color='#18a2ff', arrows=False)
+    else:
+        nx.draw_networkx_nodes(G, pos, node_size=500, node_color='#ff7518')
+        nx.draw_networkx_edges(G, pos, edgelist=edges, width=2.0, edge_color='#18a2ff', arrowsize=30, arrowstyle='->')
 
     labels = {i: str(i) for i in range(num_nodes)}
-    nx.draw_networkx_labels(G, pos, labels, font_size=10, font_color='black')
+    nx.draw_networkx_labels(G, pos, labels, font_size=16, font_color='black')
 
     plt.axis('off')
     plt.show()
 
+
 def main():
-    n = int(input("Введите размерность матрицы (n*n): "))
+    n = int(input("Enter the dimension of the matrix (n*n): " ))
 
     if 2 <= n <= 10:
         matrix = []
         for i in range(n):
-            row = input(f"Введите строку {i + 1} через пробел: ").split()
+            row = input(f"Enter row {i + 1} separated by space: ").split()
             if len(row) != n:
-                print("Ошибка: Введите ровно n элементов в строке.")
+                print("Error: Enter exactly n elements in the row.")
                 return
             matrix.append(list(map(int, row)))
 
         while True:
-            print("\nВыберите параметр для проверки:")
-            print("1. Направленность графа")
-            print("2. Связность графа")
-            print("3. Взвешенность графа")
-            print("4. Полнота графа")
-            print("5. Проверка наличия полного подграфа")
-           
-            print("7. Уникурсальность графа")
-            print("8. Количество связных компонентов")
-            print("9. Классификация графа")
-            print("10. Визуализация графа")
-            print("11. Минимальное остовное дерево (Краскал)")
-            print("0. Выход")
+            print("\nChoose the property to check:")
+            print("1. Directed or Undirected Graph")
+            print("2. Connectivity of the Graph")
+            print("3. Weighted or Unweighted Graph")
+            print("4. Completeness of the Graph")
+            print("5. Check for a Complete Subgraph")
+            print("6. Unicyclic Graph Check")
+            print("7. Number of Connected Components")
+            print("8. Graph Classification")
+            print("9. Visualize the Graph")
+            print("10.Minimum Spanning Tree (Kruskal's Algorithm)")
+            print("0. Exit")
+            
 
-            choice = input("Введите номер выбранного параметра (0-11): ")
+            choice = input(" Enter the number of the chosen property (0-11): ")
 
             if choice == "0":
                 break
             elif choice == "1":
-                # Проверка направленности графа
+                # Check for the directionality of the graph
                 if is_symmetric(matrix):
-                    print("Это ненаправленный граф.")
+                    print("This is an undirected graph.")
                 else:
-                    print("Это направленный граф.")
+                    print("This is a directed graph.")
             elif choice == "2":
-                # Проверка связности графа
+                # Check for the connectivity of the graph
                 if is_connected(matrix):
-                    print("Граф связный.")
+                    print("The graph is connected.")
                 else:
-                    print("Граф несвязный.")
+                    print("The graph is disconnected.")
             elif choice == "3":
-                # Проверка взвешенности графа
+                # Check for the weightedness of the graph
                 if is_weighted(matrix):
-                    print("Граф взвешенный.")
+                    print("The graph is weighted.")
                 else:
-                    print("Граф не взвешенный.")
+                    print("The graph is unweighted.")
             elif choice == "4":
-                # Проверка полноты графа
-                if is_complete_graph(matrix):
-                    print("Граф полный.")
-                else:
-                    print("Граф не полный.")
+               # Check for the completeness of the graph
+               if is_complete_graph(matrix):
+                    print("The graph is complete.")
+               else:
+                    print("The graph is not complete.")
             elif choice == "5":
-                # Проверка наличия полного подграфа
-                k = int(input("Введите размерность k для проверки на полный подграф: "))
+                # Check for the presence of a complete subgraph
+                k = int(input("Enter the dimension k for checking a complete subgraph: "))
                 if has_complete_subgraph(matrix, k):
-                    print(f"Существует полный подграф с {k} вершинами.")
+                    print(f"A complete subgraph with {k} vertices exists.")
                 else:
-                    print(f"Нет полного подграфа с {k} вершинами.")
+                    print(f"No complete subgraph with {k} vertices.")
             elif choice == "6":
-                # Проверка наличия циклов в графе
-                if has_cycle(matrix):
-                    print("Граф содержит циклы.")
-                else:
-                    print("Граф не содержит циклов.")
-            elif choice == "7":
-                # Проверка уникурсальности графа
+                # Check for the unicyclicity of the graph
                 if is_unicyclic(matrix):
-                    print("Граф уникурсальный.")
+                    print("The graph is unicyclic.")
                 else:
-                    print("Граф не уникурсальный.")
-            elif choice == "8":
+                    print("The graph is not unicyclic.")
+            elif choice == "7":
                 # Количество связных компонентов
                 components = count_connected_components(matrix)
-                print(f"Количество связных компонентов: {components}")
-            elif choice == "9":
+                print(f"Number of connected components: {components}")
+            elif choice == "8":
                 # Классификация графа
-                print("Тип графа:", classify_graph(matrix))
-            elif choice == "10":
+                print("Graph type:", classify_graph(matrix))
+            elif choice == "9":
                 # Визуализация графа
                 visualize_graph(matrix)
-            elif choice == "11":
+            elif choice == "10":
                 # Минимальное остовное дерево (Краскал)
                 result = kruskal(matrix)
-                print("Минимальное остовное дерево (Краскал) (рёбра):", result)
+                print("Minimum Spanning Tree (Prim's Algorithm) (edges):", result)
             else:
-                print("Ошибка: Неверный выбор. Введите число от 0 до 10.")
+                print("Error: Invalid choice. Enter a number from 0 to 10.")
     else:
-        print("Ошибка: Размерность матрицы должна быть от 2 до 10.")
+        print("Error: The matrix dimension should be between 2 and 10.")
 
 if __name__ == "__main__":
     main()
