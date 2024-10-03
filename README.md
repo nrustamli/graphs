@@ -1,6 +1,6 @@
 # graphs
 # About the author 
-This tool was created by "supper-programmist" Nurana Rustamli as a part of Parallel algorithms studies.
+This tool was created by Nurana Rustamli as a part of Parallel algorithms studies.
 # Graph Analysis Program
 
 This Python program provides various functionalities to analyze and visualize a given graph. It utilizes the NetworkX library for graph-related operations and Matplotlib for visualization.
